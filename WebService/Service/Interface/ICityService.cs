@@ -4,5 +4,5 @@ namespace WebService.Service.Interface;
 
 public interface ICityService
 {
-    public IReadOnlyList<CityResponseModel> Search(string? name = "");
+    public IReadOnlyList<CityResponseModel> Search(string? name = "", int? page = 0);
 }

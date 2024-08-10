@@ -1,11 +1,12 @@
 ﻿#nullable enable
 
 using WebService.Extexsion;
-using WebService.JsonConverter;
 using WebService.Model;
 using WebService.Service.Interface;
 using System.IO.Compression;
 using System.Text.Json;
+using System.Globalization;
+
 namespace WebService.Service;
 
 public sealed class CityService : ICityService
@@ -20,9 +21,10 @@ public sealed class CityService : ICityService
         LoadCityData();
     }
 
-    public IReadOnlyList<CityResponseModel> Search(string? name = "")
+    public IReadOnlyList<CityResponseModel> Search(string? name = "", int? page = 0)
     {
         var cities = Cities;
+        page = page.HasValue ? Math.Max(page.Value, 1) : 1;
 
         var searchTerms = new HashSet<string>() { };
         if (!string.IsNullOrEmpty(name))
@@ -43,16 +45,19 @@ public sealed class CityService : ICityService
             }
         }
 
-        var response = cities.Take(10).Select(c => new CityResponseModel
-        {
-            Id= c.Id,
-            Country = c.Country,
-            Population = c.Stat.Population,
-            Name = TryFindKeyByValue(c.Languages, searchTerms, out var key) ? c.Languages[key] : c.Name,
-            Language = key
-        })
-        .OrderBy(c => c.Name)
-        .ToList();
+        var response = cities
+            .Skip((page.Value - 1) * 10)
+            .Take(10)
+            .Select(c => new CityResponseModel
+            {
+                Id= c.Id,
+                Country = c.Country,
+                Population = c.Stat.Population,
+                Name = TryFindKeyByValue(c.Languages, searchTerms, out var key) ? c.Languages[key] : c.Name,
+                Language = string.IsNullOrEmpty(key) ? CultureInfo.GetCultureInfo("en").Name : key,
+            })
+            .OrderBy(c => c.Name)
+            .ToList();
 
         return response;
 

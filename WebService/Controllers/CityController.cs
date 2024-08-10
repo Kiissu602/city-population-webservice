@@ -1,7 +1,6 @@
 ﻿using WebService.Model;
 using WebService.Service.Interface;
 using Microsoft.AspNetCore.Mvc;
-using System.Globalization;
 
 namespace WebService.Controllers;
 
@@ -18,9 +17,9 @@ public class CityController : ControllerBase
     }
 
     [HttpGet("search")]
-    public ActionResult<IReadOnlyList<CityResponseModel>> Search([FromQuery] string? query = "")
+    public ActionResult<IReadOnlyList<CityResponseModel>> Search([FromQuery] string? query = "", [FromQuery] int? page = 0)
     {
-        var results = this.cityService.Search(query);
+        var results = this.cityService.Search(query, page);
         return this.Ok(results);
     }
 }
