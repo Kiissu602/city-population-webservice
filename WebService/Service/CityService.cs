@@ -14,39 +14,52 @@ public sealed class CityService : ICityService
 
     private readonly static string SourceDataUrl = "http://bulk.openweathermap.org/sample/current.city.list.json.gz";
 
-    private static IReadOnlyList<City> Cities = Array.Empty<City>();
+    private static IEnumerable<City> Cities = Array.Empty<City>();
 
     public CityService()
     {
         LoadCityData();
     }
 
-    public IReadOnlyList<CityResponseModel> Search(string? name = "", int? page = 0)
+    public IReadOnlyList<CityResponseModel> Search(CityFilterModel filters)
     {
         var cities = Cities;
-        page = page.HasValue ? Math.Max(page.Value, 1) : 1;
+        var page = Math.Max(filters.Page, 1);
 
         var searchTerms = new HashSet<string>() { };
-        if (!string.IsNullOrEmpty(name))
+        if (!string.IsNullOrEmpty(filters.Query))
         {
-            searchTerms = name.Split(" ", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).ToHashSet();
+            searchTerms = filters.Query.Split(" ", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).ToHashSet();
         }
         var ids = searchTerms.Where(sc => double.TryParse(sc, out var id)).Select(sc => double.Parse(sc)).ToHashSet();
 
         if (ids.Count > 0)
         {
-            cities = cities.Where(c => ids.Contains(c.Id)).ToList();
+            cities = cities.Where(c => ids.Contains(c.Id));
         }
         else
         {
             foreach (var term in searchTerms)
             {
-                cities = cities.Where(c => c.Name.ContainsIgnoreCase(term) || c.Languages.Any(c => c.Value.ContainsIgnoreCase(term))).ToList();
+                if (string.IsNullOrEmpty(filters.Language))
+                {
+                    cities = cities.Where(c => c.Name.ContainsIgnoreCase(term) || c.Languages.Any(c => c.Value.ContainsIgnoreCase(term)));
+                }
+                else
+                {
+                    cities = cities.Where(c => c.Languages.TryGetValue(filters.Language, out var name) && name.ContainsIgnoreCase(term));
+                }
             }
         }
 
+        if (!string.IsNullOrEmpty(filters.Country))
+        {
+            cities = cities.Where(c => c.Country.EqualsIgnoreCase(filters.Country));
+        }
+
+
         var response = cities
-            .Skip((page.Value - 1) * 10)
+            .Skip((page - 1) * 10)
             .Take(10)
             .Select(c => new CityResponseModel
             {
@@ -95,7 +108,7 @@ public sealed class CityService : ICityService
             var cities = JsonSerializer.Deserialize<List<City>>(json, options);
             if (cities != null)
             {
-                Cities = cities.OrderBy(c => c.Id).ToList();
+                Cities = cities.OrderBy(c => c.Id);
             }
         }
     }

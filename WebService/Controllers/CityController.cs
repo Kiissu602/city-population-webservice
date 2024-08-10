@@ -17,9 +17,20 @@ public class CityController : ControllerBase
     }
 
     [HttpGet("search")]
-    public ActionResult<IReadOnlyList<CityResponseModel>> Search([FromQuery] string? query = "", [FromQuery] int? page = 0)
+    public ActionResult<IReadOnlyList<CityResponseModel>> Search(
+        [FromQuery] string? query = "",
+        [FromQuery] string? country = "",
+        [FromQuery] string? language = "",
+        [FromQuery] int? page = 0)
     {
-        var results = this.cityService.Search(query, page);
+        var filters = new CityFilterModel()
+        {
+            Query = query ?? string.Empty,
+            Country = country ?? string.Empty,
+            Page = page ?? 0,
+            Language = language ?? string.Empty,
+        };
+        var results = this.cityService.Search(filters);
         return this.Ok(results);
     }
 }
