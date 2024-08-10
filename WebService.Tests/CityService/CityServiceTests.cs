@@ -16,23 +16,23 @@ public sealed class CityServiceTests : IClassFixture<CityServiceTestFixture>
     [Fact(DisplayName = "Search by empty string")]
     public void SearchCities_ByEmptyStringShouldReturnFirstTenResults()
     {
-        var result = this.cityService.Search(new Model.CityFilterModel() { });
+        var cities = this.cityService.Search(new Model.CityFilterModel() { });
 
-        Assert.NotNull(result);
-        Assert.True(result.Count.Equals(10));
-        Assert.All(result, c => Assert.True(c.Population > 0));
+        Assert.NotNull(cities);
+        Assert.True(cities.PageSize.Equals(10));
+        Assert.All(cities.Response, c => Assert.True(c.Population > 0));
     }
 
     [Fact(DisplayName = "Search by empty string but imppossible page")]
     public void SearchCities_ByEmptyStringImpossiblePageShouldReturnFirstTenResults()
     {
-        var result = this.cityService.Search(new Model.CityFilterModel() 
+        var cities = this.cityService.Search(new Model.CityFilterModel() 
         {
             Page = 99999999,
         });
 
-        Assert.NotNull(result);
-        Assert.True(result.Count.Equals(0));
+        Assert.NotNull(cities);
+        Assert.True(cities.PageSize.Equals(0));
     }
 
     [Fact(DisplayName = "Search by name")]
@@ -43,12 +43,12 @@ public sealed class CityServiceTests : IClassFixture<CityServiceTestFixture>
             Query = "Sanaa"
         };
 
-        var result = this.cityService.Search(filter);
+        var cities = this.cityService.Search(filter);
 
-        Assert.NotNull(result);
-        Assert.True(result.Count.Equals(1));
-        Assert.All(result, c => c.Name.EqualsIgnoreCase(filter.Query));
-        Assert.All(result, c => Assert.True(c.Population > 0));
+        Assert.NotNull(cities);
+        Assert.True(cities.PageSize.Equals(1));
+        Assert.All(cities.Response, c => c.Name.EqualsIgnoreCase(filter.Query));
+        Assert.All(cities.Response, c => Assert.True(c.Population > 0));
     }
 
     [Fact(DisplayName = "Search by various name 'پیرانشهر'")]
@@ -58,12 +58,12 @@ public sealed class CityServiceTests : IClassFixture<CityServiceTestFixture>
         {
             Query = "پیرانشهر"
         };
-        var result = this.cityService.Search(filter);
+        var cities = this.cityService.Search(filter);
 
-        Assert.NotNull(result);
-        Assert.True(result.Count.Equals(1));
-        Assert.All(result, c => c.Name.EqualsIgnoreCase(filter.Query));
-        Assert.All(result, c => Assert.True(c.Population > 0));
+        Assert.NotNull(cities);
+        Assert.True(cities.PageSize.Equals(1));
+        Assert.All(cities.Response, c => c.Name.EqualsIgnoreCase(filter.Query));
+        Assert.All(cities.Response, c => Assert.True(c.Population > 0));
     }
 
     [Fact(DisplayName = "Search by various name 'پیرانشهر' and wrong language")]
@@ -77,7 +77,7 @@ public sealed class CityServiceTests : IClassFixture<CityServiceTestFixture>
         var result = this.cityService.Search(filter);
 
         Assert.NotNull(result);
-        Assert.True(result.Count.Equals(0));
+        Assert.True(result.PageSize.Equals(0));
     }
 
     [Fact(DisplayName = "Search by country code")]
@@ -90,8 +90,8 @@ public sealed class CityServiceTests : IClassFixture<CityServiceTestFixture>
         var result = this.cityService.Search(filter);
 
         Assert.NotNull(result);
-        Assert.True(result.Count <= 10);
-        Assert.All(result, c => c.Country.EqualsIgnoreCase("IR"));
+        Assert.True(result.PageSize <= 10);
+        Assert.All(result.Response, c => c.Country.EqualsIgnoreCase("IR"));
     }
 
     [Fact(DisplayName = "Search by prefix 'City of'")]
@@ -104,8 +104,8 @@ public sealed class CityServiceTests : IClassFixture<CityServiceTestFixture>
         var result = this.cityService.Search(filter);
 
         Assert.NotNull(result);
-        Assert.True(result.Count <= 10);
-        Assert.Contains(result, c => c.Name.ContainsIgnoreCase("City") && c.Name.ContainsIgnoreCase("of"));
+        Assert.True(result.PageSize <= 10);
+        Assert.Contains(result.Response, c => c.Name.ContainsIgnoreCase("City") && c.Name.ContainsIgnoreCase("of"));
     }
 
     [Fact(DisplayName = "Search by switch prefix 'of City'")]
@@ -118,8 +118,8 @@ public sealed class CityServiceTests : IClassFixture<CityServiceTestFixture>
         var result = this.cityService.Search(filter);
 
         Assert.NotNull(result);
-        Assert.True(result.Count <= 10);
-        Assert.Contains(result, c => c.Name.ContainsIgnoreCase("City") && c.Name.ContainsIgnoreCase("of"));
+        Assert.True(result.PageSize <= 10);
+        Assert.Contains(result.Response, c => c.Name.ContainsIgnoreCase("City") && c.Name.ContainsIgnoreCase("of"));
     }
 
     [Fact(DisplayName = "Search by prefix 'City of Bel'")]
@@ -132,8 +132,8 @@ public sealed class CityServiceTests : IClassFixture<CityServiceTestFixture>
         var result = this.cityService.Search(filter);
 
         Assert.NotNull(result);
-        Assert.True(result.Count <= 10);
-        Assert.Contains(result, c => c.Name.ContainsIgnoreCase("City") && c.Name.ContainsIgnoreCase("of") && c.Name.ContainsIgnoreCase("Bel"));
+        Assert.True(result.PageSize <= 10);
+        Assert.Contains(result.Response, c => c.Name.ContainsIgnoreCase("City") && c.Name.ContainsIgnoreCase("of") && c.Name.ContainsIgnoreCase("Bel"));
     }
 
     [Fact(DisplayName = "Search by Id")]
@@ -146,8 +146,8 @@ public sealed class CityServiceTests : IClassFixture<CityServiceTestFixture>
         var result = this.cityService.Search(filter);
 
         Assert.NotNull(result);
-        Assert.True(result.Count.Equals(1));
-        Assert.All(result, c => Assert.True(c.Population > 0));
+        Assert.True(result.PageSize.Equals(1));
+        Assert.All(result.Response, c => Assert.True(c.Population > 0));
     }
 
     [Fact(DisplayName = "Search by Big Id")]
@@ -161,9 +161,9 @@ public sealed class CityServiceTests : IClassFixture<CityServiceTestFixture>
 
 
         Assert.NotNull(result);
-        Assert.True(result.Count.Equals(1));
-        Assert.All(result, c => Assert.True(c.Id == 7.16971E+6));
-        Assert.All(result, c => Assert.True(c.Population > 0));
+        Assert.True(result.PageSize.Equals(1));
+        Assert.All(result.Response, c => Assert.True(c.Id.Equals(7.16971E+6)));
+        Assert.All(result.Response, c => Assert.True(c.Population > 0));
     }
 
     [Fact(DisplayName = "Search by Ids")]
@@ -177,13 +177,13 @@ public sealed class CityServiceTests : IClassFixture<CityServiceTestFixture>
         var result = this.cityService.Search(filter);
 
         Assert.NotNull(result);
-        Assert.True(result.Count.Equals(2));
+        Assert.True(result.PageSize.Equals(2));
         foreach (var expectedId in expectedIds)
         {
-            Assert.Contains(result, c => c.Id.Equals(expectedId));
+            Assert.Contains(result.Response, c => c.Id.Equals(expectedId));
         }
 
-        Assert.All(result, c => Assert.True(c.Population > 0));
+        Assert.All(result.Response, c => Assert.True(c.Population > 0));
     }
 
     [Fact(DisplayName = "Search by Big Ids")]
@@ -197,14 +197,14 @@ public sealed class CityServiceTests : IClassFixture<CityServiceTestFixture>
         var result = this.cityService.Search(filter);
 
         Assert.NotNull(result);
-        Assert.True(result.Count.Equals(2));
+        Assert.True(result.Response.Count.Equals(2));
 
         foreach (var expectedId in expectedIds)
         {
-            Assert.Contains(result, c => c.Id.Equals(expectedId));
+            Assert.Contains(result.Response, c => c.Id.Equals(expectedId));
         }
         
-        Assert.All(result, c => Assert.NotNull(c));
-        Assert.All(result, c => Assert.True(c.Population > 0));
+        Assert.All(result.Response, c => Assert.NotNull(c));
+        Assert.All(result.Response, c => Assert.True(c.Population > 0));
     }
 }

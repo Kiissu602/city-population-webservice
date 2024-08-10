@@ -18,27 +18,33 @@ public class CityController : ControllerBase
     }
 
     [HttpGet("search")]
-    public ActionResult<IReadOnlyList<CityViewModel>> Search(
+    public ActionResult<CityPagingViewModel> Search(
         [FromQuery, SwaggerParameter(Description = "The name or ids of the city to search for.")] string? query = "",
         [FromQuery, SwaggerParameter(Description = "The coutry of city for filter.")] string? country = "",
         [FromQuery, SwaggerParameter(Description = "The language of country name  for filter.")] string? language = "",
-        [FromQuery, SwaggerParameter(Description = "The page of search result.")] int? page = 1)
+        [FromQuery, SwaggerParameter(Description = "The page of search result.")] int? pageIndex = 1)
     {
         var filters = new CityFilterModel()
         {
             Query = query ?? string.Empty,
             Country = country ?? string.Empty,
-            Page = page ?? 0,
+            Page = pageIndex ?? 0,
             Language = language ?? string.Empty,
         };
-        var results = this.cityService.Search(filters);
-        var response = results.Select(r => new CityViewModel()
-        {
-            CityName = r.Name,
-            Country = r.Country,
-            Population = r.Population
-        }).ToList();
+        var cities = this.cityService.Search(filters);
 
-        return this.Ok(response);
+        return this.Ok(new CityPagingViewModel()
+        {
+            Cities = cities.Response.Select(r => new CityViewModel()
+            {
+                Id = r.Id,
+                CityName = r.Name,
+                Country = r.Country,
+                Population = r.Population
+            }).ToList(),
+            TotalCount = cities.TotalCount,
+            PageSize = cities.PageSize,
+            PageIndex = cities.PageIndex,
+        });
     }
 }

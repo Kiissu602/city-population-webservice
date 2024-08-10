@@ -21,7 +21,7 @@ public sealed class CityService : ICityService
         LoadCityData();
     }
 
-    public IReadOnlyList<CityResponseModel> Search(CityFilterModel filters)
+    public CityPagingResponseModel Search(CityFilterModel filters)
     {
         var cities = Cities;
         var page = Math.Max(filters.Page, 1);
@@ -57,7 +57,7 @@ public sealed class CityService : ICityService
             cities = cities.Where(c => c.Country.EqualsIgnoreCase(filters.Country));
         }
 
-
+        var total = cities.Count();
         var response = cities
             .Skip((page - 1) * 10)
             .Take(10)
@@ -72,7 +72,13 @@ public sealed class CityService : ICityService
             .OrderBy(c => c.Name)
             .ToList();
 
-        return response;
+        return new CityPagingResponseModel()
+        {
+            PageIndex = page,
+            PageSize = response.Count,
+            TotalCount = total,
+            Response = response
+        } ;
 
         static bool TryFindKeyByValue(IReadOnlyDictionary<string, string> dictionary, HashSet<string> values, out string key)
         {

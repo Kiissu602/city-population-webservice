@@ -8,5 +8,7 @@ public sealed class CityFilterModel
 
     public int Page { get; set; }
 
+    public int PageSize { get; set; }
+
     public string Language { get; set; } = string.Empty;
 }
