@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace CityPopulationWebService.Model;
+namespace WebService.Model;
 
 public sealed class City
 {
@@ -15,4 +15,7 @@ public sealed class City
 
     [JsonPropertyName("stat")]
     public Stat Stat { get; set; } = new Stat();
+
+    [JsonPropertyName("langs")]
+    public IReadOnlyDictionary<string, string> Languages { get; set; } = new Dictionary<string, string>();
 }

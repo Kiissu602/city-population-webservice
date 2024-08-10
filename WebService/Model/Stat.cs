@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
 using System.Text.Json.Serialization;
 
-namespace CityPopulationWebService.Model;
+namespace WebService.Model;
 
 public sealed class Stat
 {

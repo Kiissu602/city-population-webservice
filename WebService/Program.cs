@@ -1,5 +1,5 @@
-using CityPopulationWebService.Service.Interface;
-using CityPopulationWebService.Service;
+using WebService.Service.Interface;
+using WebService.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -1,4 +1,4 @@
-﻿namespace CityPopulationWebService.Extexsion;
+﻿namespace WebService.Extexsion;
 
 public static class StringExtensions
 {

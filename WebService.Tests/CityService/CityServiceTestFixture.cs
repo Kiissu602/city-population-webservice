@@ -1,4 +1,4 @@
-﻿using CityPopulationWebService.Service.Interface;
+﻿using WebService.Service.Interface;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace WebService.Tests.CityService;
@@ -11,7 +11,7 @@ public class CityServiceTestFixture
     {
         var services = new ServiceCollection();
 
-        services.AddSingleton<ICityService, CityPopulationWebService.Service.CityService>();
+        services.AddSingleton<ICityService, Service.CityService>();
         this.ServiceProvider = services.BuildServiceProvider();
     }
 }

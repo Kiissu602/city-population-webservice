@@ -1,8 +1,8 @@
-﻿using CityPopulationWebService.Model;
+﻿using WebService.Model;
 
-namespace CityPopulationWebService.Service.Interface;
+namespace WebService.Service.Interface;
 
 public interface ICityService
 {
-    public IReadOnlyList<City> Search(string? name = "");
+    public IReadOnlyList<CityResponseModel> Search(string? name = "");
 }
