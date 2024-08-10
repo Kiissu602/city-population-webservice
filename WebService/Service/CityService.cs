@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using WebService.Extexsion;
+﻿using WebService.Extexsion;
 using WebService.Model;
 using WebService.Service.Interface;
 using System.IO.Compression;
@@ -100,6 +98,8 @@ public sealed class CityService : ICityService
     {
         var client = new HttpClient();
         var response =  client.GetAsync(SourceDataUrl).Result;
+        client.Dispose();
+
         var stream = response.Content.ReadAsStreamAsync().Result;
 
         using (var gzipStream = new GZipStream(stream, CompressionMode.Decompress))

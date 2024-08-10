@@ -26,7 +26,7 @@ public sealed class CityServiceTests : IClassFixture<CityServiceTestFixture>
     [Fact(DisplayName = "Search by empty string but imppossible page")]
     public void SearchCities_ByEmptyStringImpossiblePageShouldReturnFirstTenResults()
     {
-        var cities = this.cityService.Search(new Model.CityFilterModel() 
+        var cities = this.cityService.Search(new Model.CityFilterModel()
         {
             Page = 99999999,
         });

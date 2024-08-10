@@ -4,11 +4,11 @@ public static class StringExtensions
 {
     public static bool ContainsIgnoreCase(this string source, string value)
     {
-        return source.Contains(value, StringComparison.OrdinalIgnoreCase);
+        return source?.Contains(value, StringComparison.OrdinalIgnoreCase) ?? false;
     }
 
     public static bool EqualsIgnoreCase(this string source, string value)
     {
-        return source.Equals(value, StringComparison.OrdinalIgnoreCase);
+        return source?.Equals(value, StringComparison.OrdinalIgnoreCase) ?? false;
     }
 }
