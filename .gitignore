@@ -1,0 +1,64 @@
+# .NET
+*.dll
+*.exe
+*.pdb
+*.obj
+*.log
+*.tmp
+*.swp
+
+# Build results
+bin/
+obj/
+out/
+
+# NuGet Packages
+*.nupkg
+*.snupkg
+packages/
+.nuget/
+*.nuspec
+
+# User-specific files
+*.user
+*.userosscache
+*.suo
+*.sln.docstates
+
+# Visual Studio Code
+.vscode/
+
+# Rider
+.idea/
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# Dotnet Tools
+.dotnet/
+*.dotnet-tools.json
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+
+# Linux
+*~
+
+# Logs
+*.log
+
+# Npm packages
+node_modules/
+
+# Azure Web Apps
+*.deployment
+.deployments/
+
+# Local development environment files
+*.local
+*.env
+.env.*
