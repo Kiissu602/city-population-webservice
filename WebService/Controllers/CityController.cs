@@ -1,6 +1,7 @@
 ﻿using WebService.Model;
 using WebService.Service.Interface;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace WebService.Controllers;
 
@@ -17,11 +18,11 @@ public class CityController : ControllerBase
     }
 
     [HttpGet("search")]
-    public ActionResult<IReadOnlyList<CityResponseModel>> Search(
-        [FromQuery] string? query = "",
-        [FromQuery] string? country = "",
-        [FromQuery] string? language = "",
-        [FromQuery] int? page = 0)
+    public ActionResult<IReadOnlyList<CityViewModel>> Search(
+        [FromQuery, SwaggerParameter(Description = "The name or ids of the city to search for.")] string? query = "",
+        [FromQuery, SwaggerParameter(Description = "The coutry of city for filter.")] string? country = "",
+        [FromQuery, SwaggerParameter(Description = "The language of country name  for filter.")] string? language = "",
+        [FromQuery, SwaggerParameter(Description = "The page of search result.")] int? page = 1)
     {
         var filters = new CityFilterModel()
         {
@@ -31,6 +32,13 @@ public class CityController : ControllerBase
             Language = language ?? string.Empty,
         };
         var results = this.cityService.Search(filters);
-        return this.Ok(results);
+        var response = results.Select(r => new CityViewModel()
+        {
+            CityName = r.Name,
+            Country = r.Country,
+            Population = r.Population
+        }).ToList();
+
+        return this.Ok(response);
     }
 }

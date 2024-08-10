@@ -18,6 +18,7 @@ builder.Services.AddSwaggerGen(options =>
         Title = "City Population API",
         Description = "An API to search for city populations by name."
     });
+    options.EnableAnnotations();
 });
 
 var app = builder.Build();
